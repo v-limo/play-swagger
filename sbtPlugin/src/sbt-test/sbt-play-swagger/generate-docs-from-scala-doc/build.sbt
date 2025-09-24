@@ -9,7 +9,7 @@ name := "app"
 
 version := "1.0.1-BETA1"
 
-scalaVersion := "2.13.12"
+scalaVersion := "3.7.3"
 
 swaggerDomainNameSpaces := Seq("namespace1", "namespace2")
 
@@ -162,7 +162,7 @@ TaskKey[Unit]("check") := {
 }
 
 TaskKey[Unit]("unzip1") := {
-  val from = new File(s"target/scala-2.13/app_2.13-${version.value}.jar")
+  val from = new File(s"target/scala-3/app_3-${version.value}.jar")
   val to = new File("target/jar")
   IO.unzip(from, to)
 }
