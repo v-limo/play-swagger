@@ -1,4 +1,4 @@
 jdk:
   - openjdk21
 install:
-  - sbt -v -DskipTests=true clean ++3.7.3! playSwagger/publishM2
+  - sbt -v -DskipTests=true clean ++3.8.0! playSwagger/publishM2
