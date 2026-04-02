@@ -5,7 +5,7 @@ import scala.util.{Failure, Success}
 import com.iheart.playSwagger.OutputTransformer.SimpleOutputTransformer
 import com.iheart.playSwagger.generator.{NamingConvention, PrefixDomainModelQualifier, SwaggerSpecGenerator}
 import org.specs2.mutable.Specification
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class OutputTransformerSpec extends Specification {
   "OutputTransformer.traverseTransformer" >> {

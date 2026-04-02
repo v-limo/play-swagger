@@ -155,8 +155,8 @@ public final class Attribute{
    * </pre>
    * @return A new Attribute builder
    */
-  public static Attribute.Builder builder() {
-    return new Attribute.Builder();
+  public static Builder builder() {
+    return new Builder();
   }
 
   /**

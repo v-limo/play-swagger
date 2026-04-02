@@ -42,4 +42,37 @@ trait SwaggerKeys {
       "embedScaladoc",
       "Output schema description using scaladoc of case class"
     )
+
+  val swaggerGenerateHtml: SettingKey[Boolean] =
+    SettingKey[Boolean]("swaggerGenerateHtml", "Generate an index.html viewer alongside swagger.json")
+
+  val swaggerHtmlRenderer: SettingKey[String] =
+    SettingKey[String]("swaggerHtmlRenderer", "HTML renderer to use: \"scalar\" (default) or \"redoc\"")
+
+  val swaggerHtmlRenderers: SettingKey[Seq[String]] =
+    SettingKey[Seq[String]](
+      "swaggerHtmlRenderers",
+      "HTML renderers to generate. Overrides swaggerHtmlRenderer when non-empty."
+    )
+
+  val swaggerHideDownloadButton: SettingKey[Boolean] =
+    SettingKey[Boolean](
+      "swaggerHideDownloadButton",
+      "Hide the download spec button in the HTML viewer "
+    )
+
+  val swaggerHideTryIt: SettingKey[Boolean] =
+    SettingKey[Boolean]("swaggerHideTryIt", "Hide the Try it if supported")
+
+  val swaggerScalarVersion: SettingKey[String] =
+    SettingKey[String]("swaggerScalarVersion", "Pinned @scalar/api-reference CDN version (e.g. \"1.49.5\")")
+
+  val swaggerScalarLayout: SettingKey[String] =
+    SettingKey[String]("swaggerScalarLayout", "Scalar layout: \"modern\" (default) or \"classic\"")
+
+  val swaggerScalarDefaultOpenFirstTag: SettingKey[Boolean] =
+    SettingKey[Boolean]("swaggerScalarDefaultOpenFirstTag", "Auto-expand the first tag/section when Scalar loads")
+
+  val swaggerScalarHideDarkModeToggle: SettingKey[Boolean] =
+    SettingKey[Boolean]("swaggerScalarHideDarkModeToggle", "Hide the dark/light mode toggle in Scalar")
 }

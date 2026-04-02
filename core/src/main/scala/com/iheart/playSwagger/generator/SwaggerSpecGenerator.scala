@@ -6,19 +6,19 @@ import scala.collection.immutable.ListMap
 import scala.collection.mutable
 import scala.util.{Failure, Success, Try}
 
+import com.iheart.playSwagger.*
 import com.iheart.playSwagger.OutputTransformer.SimpleOutputTransformer
-import com.iheart.playSwagger._
 import com.iheart.playSwagger.domain.parameter.{CustomSwaggerParameter, GenSwaggerParameter, SwaggerParameterWriter}
 import com.iheart.playSwagger.domain.{CustomTypeMapping, Definition}
 import com.iheart.playSwagger.exception.RoutesParseException.RoutesParseErrorDetail
 import com.iheart.playSwagger.exception.{MissingBaseSpecException, RoutesParseException}
 import com.iheart.playSwagger.generator.ResourceReader.read
-import com.iheart.playSwagger.generator.SwaggerSpecGenerator._
+import com.iheart.playSwagger.generator.SwaggerSpecGenerator.*
 import com.iheart.playSwagger.generator.YAMLParser.parseYaml
 import com.iheart.playSwagger.util.ExtendJsValue.JsObjectUpdate
+import play.api.libs.json.*
 import play.api.libs.json.JsValue.jsValueToJsLookup
-import play.api.libs.json._
-import play.routes.compiler._
+import play.routes.compiler.*
 
 object SwaggerSpecGenerator {
   private val defaultRoutesFile = "routes"
@@ -33,10 +33,10 @@ object SwaggerSpecGenerator {
   private val baseSpecFileName = "swagger"
 
   def apply(namingConvention: NamingConvention, swaggerV3: Boolean, domainNameSpaces: String*)(implicit
-  cl: ClassLoader): SwaggerSpecGenerator = {
+      cl: ClassLoader): SwaggerSpecGenerator = {
     SwaggerSpecGenerator(
       namingConvention = namingConvention,
-      modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*),
+      modelQualifier = PrefixDomainModelQualifier(domainNameSpaces*),
       swaggerV3 = swaggerV3
     )
   }
@@ -48,16 +48,16 @@ object SwaggerSpecGenerator {
   )(implicit cl: ClassLoader): SwaggerSpecGenerator = {
     SwaggerSpecGenerator(
       namingConvention = namingConvention,
-      modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*),
+      modelQualifier = PrefixDomainModelQualifier(domainNameSpaces*),
       outputTransformers = outputTransformers
     )
   }
 
   def apply(swaggerV3: Boolean, operationIdFully: Boolean, embedScaladoc: Boolean, domainNameSpaces: String*)(implicit
-  cl: ClassLoader): SwaggerSpecGenerator = {
+      cl: ClassLoader): SwaggerSpecGenerator = {
     SwaggerSpecGenerator(
       namingConvention = NamingConvention.None,
-      modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*),
+      modelQualifier = PrefixDomainModelQualifier(domainNameSpaces*),
       swaggerV3 = swaggerV3,
       operationIdFully = operationIdFully,
       embedScaladoc = embedScaladoc
@@ -65,10 +65,10 @@ object SwaggerSpecGenerator {
   }
 
   def apply(outputTransformers: Seq[OutputTransformer], domainNameSpaces: String*)(implicit
-  cl: ClassLoader): SwaggerSpecGenerator = {
+      cl: ClassLoader): SwaggerSpecGenerator = {
     SwaggerSpecGenerator(
       namingConvention = NamingConvention.None,
-      modelQualifier = PrefixDomainModelQualifier(domainNameSpaces: _*),
+      modelQualifier = PrefixDomainModelQualifier(domainNameSpaces*),
       outputTransformers = outputTransformers
     )
   }
@@ -247,7 +247,9 @@ final case class SwaggerSpecGenerator(
     }
 
     val definitionsJson =
-      JsObject(definitions.map(d => d.name -> Json.toJson(d)(Definition.writer(parameterWriter.propertiesWriter))))
+      JsObject(definitions.map(d =>
+        d.name -> Json.toJson(d)(using Definition.writer(using parameterWriter.propertiesWriter))
+      ))
 
     val pathsAndDefinitionsJson = Json.obj(
       "paths" -> pathsJson,
@@ -310,8 +312,8 @@ final case class SwaggerSpecGenerator(
 
       // maintain the routes order as per the original routing file
       val zgbp = endPointEntries.zipWithIndex.groupBy(_._1._1)
-      val lhm = mutable.LinkedHashMap(zgbp.toSeq.sortBy(_._2.head._2): _*)
-      val gbp2 = lhm.mapValues(_.map(_._1)).toSeq
+      val lhm = mutable.LinkedHashMap(zgbp.toSeq.sortBy(_._2.head._2)*)
+      val gbp2 = lhm.view.mapValues(_.map(_._1)).toSeq
 
       gbp2.map(x => (x._1, x._2.map(_._2).reduce(_ deepMerge _)))
     }
@@ -419,9 +421,10 @@ final case class SwaggerSpecGenerator(
 
     // コントローラー名とメソッド名、もしくはメソッド名のみから operationId を取得する
     val operationId = Json.obj(
-      "operationId" -> (if (operationIdFully)
-                          s"${route.verb.value.toLowerCase}.${route.call.controller}.${route.call.method}"
-                        else route.call.method)
+      "operationId" ->
+        (if (operationIdFully)
+           s"${route.verb.value.toLowerCase}.${route.call.controller}.${route.call.method}"
+         else route.call.method)
     )
 
     // operationId, tag, parameter object, コメントから生成されたその他の情報をマージする

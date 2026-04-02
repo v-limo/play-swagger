@@ -5,7 +5,7 @@ import scala.util.matching.Regex
 
 import com.iheart.playSwagger.domain.CustomTypeMapping
 import com.iheart.playSwagger.domain.parameter.{CustomSwaggerParameter, GenSwaggerParameter, SwaggerParameter}
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.routes.compiler.Parameter
 
 class SwaggerParameterMapper(
@@ -32,7 +32,7 @@ class SwaggerParameterMapper(
       typeName: String,
       name: String,
       default: Option[JsValue],
-      description: Option[String] = None
+      description: Option[String]
   )(implicit cl: ClassLoader): SwaggerParameter = {
     val tpe = removeKnownPrefixes(typeName)
     implicit val implicitName: String = name
@@ -166,7 +166,7 @@ class SwaggerParameterMapper(
         _ = values.setAccessible(true)
         entries <- Try(values
           .get(singleton)
-          .asInstanceOf[Vector[_]]
+          .asInstanceOf[Vector[?]]
           .map { item =>
             val entryName = Try(
               item.getClass.getMethod("entryName")

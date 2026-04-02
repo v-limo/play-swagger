@@ -28,7 +28,7 @@ object OutputTransformer {
     }.toList
 
     val failures: List[Failure[JsValue]] =
-      tryElements.filter(_.isInstanceOf[Failure[_]]).map(_.asInstanceOf[Failure[JsValue]])
+      tryElements.filter(_.isInstanceOf[Failure[?]]).map(_.asInstanceOf[Failure[JsValue]])
     if (failures.nonEmpty) {
       Failure(failures.head.exception)
     } else {
@@ -43,7 +43,7 @@ object OutputTransformer {
       case (key, value: JsValue) => (key, transformer(value))
     }
     val failures: Seq[(String, Failure[JsValue])] = tryFields
-      .filter(_._2.isInstanceOf[Failure[_]])
+      .filter(_._2.isInstanceOf[Failure[?]])
       .asInstanceOf[Seq[(String, Failure[JsValue])]]
     if (failures.nonEmpty) {
       Failure(failures.head._2.exception)
@@ -79,7 +79,6 @@ class ParametricTypeNamesTransformer extends OutputTransformer {
       case (key, value: JsObject) => (normalize(key), tf(value))
       case (key, JsString(value)) => (normalize(key), JsString(normalize(value)))
       case (key, other) => (normalize(key), other)
-      case e => e
     }
   }
 

@@ -2,8 +2,8 @@ package com.iheart.playSwagger
 
 import scala.collection.immutable
 
+import enumeratum.*
 import enumeratum.EnumEntry.Snakecase
-import enumeratum._
 
 sealed trait SampleEnumeratumEnum extends EnumEntry with Snakecase
 

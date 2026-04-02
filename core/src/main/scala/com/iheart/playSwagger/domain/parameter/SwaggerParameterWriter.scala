@@ -1,7 +1,7 @@
 package com.iheart.playSwagger.domain.parameter
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
+import play.api.libs.json.*
 class SwaggerParameterWriter(swaggerV3: Boolean) {
 
   private val nullableName: String = if (swaggerV3) "nullable" else "x-nullable"
@@ -50,13 +50,13 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
         (__ \ "required").write[Boolean] ~
         (__ \ "description").writeNullable[String] ~
         // referenceType は `schema: $ref: ` という表記になる
-        (__ \ "schema").writeNullable[String](refWrite) ~
+        (__ \ "schema").writeNullable[String](using refWrite) ~
         (under \ "type").writeNullable[String] ~
         (under \ "format").writeNullable[String] ~
         (under \ nullableName).writeNullable[Boolean] ~
         (under \ "default").writeNullable[JsValue] ~
         (under \ "example").writeNullable[JsValue] ~
-        (under \ "items").writeNullable[SwaggerParameter](propWrites) ~
+        (under \ "items").writeNullable[SwaggerParameter](using propWrites) ~
         (under \ "enum").writeNullable[Seq[String]]
     ) { p =>
       (
@@ -103,7 +103,7 @@ class SwaggerParameterWriter(swaggerV3: Boolean) {
   }
 
   implicit val propertiesWriter: Writes[Seq[SwaggerParameter]] = Writes[Seq[SwaggerParameter]] { ps =>
-    JsObject(ps.map(p => p.name -> Json.toJson(p)(propWrites)))
+    JsObject(ps.map(p => p.name -> Json.toJson(p)(using propWrites)))
   }
 
 }

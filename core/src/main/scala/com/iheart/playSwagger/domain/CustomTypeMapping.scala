@@ -16,5 +16,5 @@ object CustomTypeMapping {
       (JsPath \ "specAsParameter").read[List[JsObject]] and
       (JsPath \ "specAsProperty").readNullable[JsObject] and
       (JsPath \ "required").read[Boolean].orElse(Reads.pure(true))
-  )(CustomTypeMapping.apply _)
+  )(CustomTypeMapping.apply)
 }

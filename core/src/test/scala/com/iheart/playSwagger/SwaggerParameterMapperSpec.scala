@@ -1,4 +1,5 @@
 package com.iheart.playSwagger
+
 import com.iheart.playSwagger.domain.CustomTypeMapping
 import com.iheart.playSwagger.domain.parameter.{CustomSwaggerParameter, GenSwaggerParameter}
 import com.iheart.playSwagger.generator.{PrefixDomainModelQualifier, SwaggerParameterMapper}

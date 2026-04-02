@@ -1,7 +1,7 @@
 package com.iheart.playSwagger.generator
 
-import scala.collection.JavaConverters
-import scala.meta.internal.{Scaladoc => iScaladoc}
+import scala.jdk.CollectionConverters.*
+import scala.meta.internal.Scaladoc as iScaladoc
 
 import com.fasterxml.jackson.databind.BeanDescription
 import com.iheart.playSwagger.domain.Definition
@@ -29,9 +29,9 @@ abstract class DefinitionGeneratorCommons(implicit cl: ClassLoader) { self: Defi
     case head: iScaladoc.Heading => new Heading(head, 1)
     case table: iScaladoc.Table =>
       val builder = new Table.Builder().withAlignments(Table.ALIGN_RIGHT, Table.ALIGN_LEFT).addRow(
-        table.header.cols: _*
+        table.header.cols*
       )
-      table.rows.foreach(row => builder.addRow(row.cols: _*))
+      table.rows.foreach(row => builder.addRow(row.cols*))
       builder.build()
     // TODO: Support List
     // https://github.com/Steppschuh/Java-Markdown-Generator/pull/13
@@ -43,7 +43,7 @@ abstract class DefinitionGeneratorCommons(implicit cl: ClassLoader) { self: Defi
     val beanDesc: BeanDescription = _mapper.getSerializationConfig.introspect(`type`)
     val beanProperties = beanDesc.findProperties
     val ignoreProperties = beanDesc.getIgnoredPropertyNames
-    val propertySet = JavaConverters.asScalaIteratorConverter(beanProperties.iterator()).asScala.toSeq
+    val propertySet = beanProperties.iterator().asScala.toSeq
     propertySet.filter(bd => !ignoreProperties.contains(bd.getName)).map { entry =>
       val name = entry.getName
       val className = entry.getPrimaryMember.getType.getRawClass.getName

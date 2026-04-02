@@ -1,47 +1,28 @@
-ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
-ThisBuild / sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
-ThisBuild / publishTo := {
-  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
-  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
-  else localStaging.value
-}
+ThisBuild / version := "3.8.1"
+Publish.lintSettings
 ThisBuild / publish / skip := true
 ThisBuild / scalafixDependencies ++= Seq(
-  "com.sandinh" %% "scala-rewrites" % "1.1.0-M1",
-  "net.pixiv" %% "scalafix-pixiv-rule" % "4.5.3",
-  "com.github.xuwei-k" %% "scalafix-rules" % "0.3.1",
-  "com.github.jatcwang" %% "scalafix-named-params" % "0.2.3"
+  "com.github.xuwei-k" %% "scalafix-rules" % "0.6.24",
+  "net.pixiv" %% "scalafix-pixiv-rule" % "4.5.3"
 )
-
-ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
-
-addCommandAlias(
-  "publishForExample",
-  ";set ThisBuild / version := \"0.0.1-EXAMPLE\"; +publishLocal"
-)
-
-lazy val scalaV = "2.12.20"
+lazy val scalaV = "3.8.1"
 
 lazy val root = project.in(file("."))
   .aggregate(playSwagger, sbtPlaySwagger)
   .settings(
-    sonatypeProfileName := "io.github.play-swagger",
     publish / skip := true,
     sourcesInBase := false,
     scalaVersion := scalaV
   )
 
 lazy val playSwagger = project.in(file("core"))
-  .enablePlugins(GitBranchPrompt)
-  .enablePlugins(CiReleasePlugin)
   .settings(
     publish / skip := false,
     Publish.coreSettings,
-    Testing.settings,
     name := "play-swagger",
-    libraryDependencies ++= Dependencies.playTest(scalaVersion.value) ++
-      Dependencies.playRoutesCompiler(scalaVersion.value) ++
-      Dependencies.playJson(scalaVersion.value) ++
+    libraryDependencies ++= Dependencies.playTest ++
+      Dependencies.playRoutesCompiler ++
+      Dependencies.playJson ++
       Dependencies.enumeratum ++
       Dependencies.refined ++
       Dependencies.test ++
@@ -50,33 +31,22 @@ lazy val playSwagger = project.in(file("core"))
         "org.scalameta" %% "scalameta" % "4.12.7",
         "net.steppschuh.markdowngenerator" % "markdowngenerator" % "1.3.1.1",
         "joda-time" % "joda-time" % "2.12.7" % Test,
-        "com.google.errorprone" % "error_prone_annotations" % "2.42.0" % Test
-      ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((3, _)) => Seq("org.scala-lang" %% "scala3-staging" % scalaVersion.value)
-        case _ => Seq.empty
-      }),
-    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
+        "com.google.errorprone" % "error_prone_annotations" % "2.42.0" % Test,
+        "org.scala-lang" %% "scala3-staging" % scalaVersion.value
+      ),
     addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0"),
     scalaVersion := scalaV,
-    crossScalaVersions := Seq(scalaVersion.value, "2.13.16", "3.8.0"),
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
-    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 12)) => Seq("-Xlint:unused")
-      case Some((2, 13)) => Seq("-Wunused")
-      case _ => Seq("-Wunused:all", "-Yretain-trees")
-    }) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, _)) => Seq("-Ypatmat-exhaust-depth", "40", "-P:semanticdb:synthetics:on")
-      case _ => Seq.empty
-    }) ++ Seq(
+    scalacOptions ++= Seq(
+      "-Wunused:all",
+      "-Yretain-trees",
       "-deprecation",
       "-feature"
     )
   )
 
 lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
-  .enablePlugins(GitBranchPrompt)
-  .enablePlugins(CiReleasePlugin)
   .settings(
     publish / skip := false,
     Publish.coreSettings,
@@ -90,7 +60,7 @@ lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
     name := "sbt-play-swagger",
     description := "sbt plugin for play swagger spec generation",
     sbtPlugin := true,
-    scalaVersion := scalaV,
+    scalaVersion := "2.12.20", // SBT 1.x plugins must be compiled with Scala 2.12
     scriptedLaunchOpts := {
       scriptedLaunchOpts.value ++
         Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
@@ -98,10 +68,8 @@ lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
     scriptedBufferLog := false,
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
-    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 13)) => Seq("-Wunused")
-      case _ => Seq("-Xlint:unused")
-    }) ++ Seq(
+    scalacOptions ++= Seq(
+      "-Xlint:unused",
       "-deprecation",
       "-feature",
       "-Ypatmat-exhaust-depth",

@@ -9,7 +9,7 @@ name := "app"
 
 version := "1.0.1-BETA1"
 
-scalaVersion := "2.13.18"
+scalaVersion := "3.8.2"
 
 swaggerDomainNameSpaces := Seq("namespace1", "namespace2")
 
@@ -18,11 +18,6 @@ swaggerRoutesFile := "my-routes"
 swaggerOutputTransformers := Seq(envOutputTransformer)
 
 swaggerPlayJava := false
-
-embedScaladoc := true
-
-addCompilerPlugin("com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0")
-libraryDependencies += "com.github.takezoe" %% "runtime-scaladoc-reader" % "1.1.0"
 
 val pathVal = System.getenv("PATH")
 
@@ -64,13 +59,11 @@ TaskKey[Unit]("check") := {
       |      "namespace1.Artist":{
       |         "properties":{
       |            "name":{
-      |               "type":"string",
-      |               "description":"Fully Name"
+      |               "type":"string"
       |            },
       |            "age":{
       |               "type":"integer",
-      |               "format":"int32",
-      |               "description":"expressed in the Western style of counting fully completed years"
+      |               "format":"int32"
       |            },
       |            "birthdate":{
       |               "type":"string",
@@ -86,8 +79,7 @@ TaskKey[Unit]("check") := {
       |      "namespace2.Track":{
       |         "properties":{
       |            "name":{
-      |               "type":"string",
-      |               "description": "This Track Name"
+      |               "type":"string"
       |            },
       |            "genre":{
       |               "type":"string",
@@ -162,8 +154,9 @@ TaskKey[Unit]("check") := {
 }
 
 TaskKey[Unit]("unzip1") := {
-  val from = new File(s"target/scala-2.13/app_2.13-${version.value}.jar")
+  val from = new File(s"target/scala-${scalaVersion.value}/app_${scalaBinaryVersion.value}-${version.value}.jar")
   val to = new File("target/jar")
+  println(s"from: $from")
   IO.unzip(from, to)
 }
 
