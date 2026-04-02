@@ -10,7 +10,7 @@ import sbt.{AutoPlugin, *}
 object SwaggerPlugin extends AutoPlugin {
 
   private val faviconRef: String =
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1080 1080'%3E%3Ccircle fill='%23712ebf' cx='540' cy='539.72' r='540'/%3E%3Cpath fill='%23fff' d='M500.94,580.52c-12.02-33.81-28.23-64.89-57.12-87.98-33.44-26.72-80.24-36.09-109.28-67.05-36.75-39.18-42.08-98.62-1.08-132.36,24.78-20.4,57.93-27.6,88.68-18.31,36.82,11.13,51.62,41.27,75.38,68.01,40.52,45.6,104.24,52.75,159.41,69.03,57.48,16.96,117.51,41.08,154.41,90.79,70.36,94.77,22.05,265-92.95,299.55-59.09,17.75-116.56-6.17-153.14-54.3-35.93-47.28-44.32-111.13-64.32-167.38Z'/%3E%3Cpath fill='%23fff' d='M396.92,793.27c-22.61,12.57-49.95,17.98-74.51,14.12-29.41-4.62-53.85-22.92-69.32-48.01-6.99-11.34-11.98-24.79-14.37-40.41-8.13-37.83,1.64-76.89,21.76-108.43,4.02-6.31,8.46-12.32,13.25-17.95,3.96-4.66,8.2-9.12,12.69-13.3,28.09-23.96,71.91-51.58,110.84-23.96,38.93,27.62,52.66,60.18,55.65,105.18,.71,6.16,1.13,12.46,1.23,18.81,.5,31.77-7.08,64.96-27.54,89.7-8.05,9.73-18.26,17.9-29.68,24.25Z'/%3E%3C/svg%3E"
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABy1BMVEUAAAB3M7twLb9yLcBxLr9xLr9xLr5xLr9xLr9xLb5tN7ZzLb9wL79xLr9xLb5vLr5mM7NxL75xLr9xLr+AIL9yL7xxLr9xLsB2MbpwLr1xLr9xLr9yK75wM8JxL79xOcZwLcByLb5xLr9xLr9xLsB2J8RyL79yLr9xL8BxLr9xLsBxLsBxLr9yLb9xLr9xLr5wLb9xLr9yLcB0LrlxLr9qK79xK79xLr90LsFyL8BxLsCAK6pyLsBxL8BtJLZvLLxxLr9wLsBxLcFxLsBuLr9zM79xLr9xLr91K79wLr9wLr9yL79wML9wLr5xLr9xLsBwLr9xLr99P8TRu+r38/vl2fOXZ9DSvev////7+f2RXs707/qUYs/Zxu7+/f7TvuuhddV8PsSKU8r28fv9/f7g0fGxjNyDSMfOt+n+/v/59vy0kd1zMcDp3/XNtulyML+ARMaletZ1NcG6meDn3PTLs+h6PMO1k97ezvDf0PFyL7/49fy4lt+QXM36+P3t5Peqgtmzj93l2PP9/P6rg9mCR8e4l9/p3vWVYs9+QcWuh9rh1PJzMMDm2/T59/yYZ9G0kN3v5/ju5vfEqOR5OsN6O8O9nuHo3fWJUsrzxHzPAAAAUXRSTlMAD1udzOv9y5xaDiif9p4nCo77jAgm1MkaMurkLxnQCY2C9Jf1DVebmcjp+fjKx5qYWFUL8wwk+iGJhQbBxQcX4uUt4SwUwMYYf4SUIJbolVT2+3Q9AAAAAWJLR0RY7bXEjgAAAAlwSFlzAAAAbwAAAG8B8aLcQwAAAAd0SU1FB+YMDwoIG95xaVoAAAGXSURBVDjLdZP3W8IwGITjQEVFFHFvwQVOwK3gxq3BVcU9cSvuiXvv/edKkyYtpdwvvd69bfqkXwCg8vMPCJQFBcmCQ+ShwFth4QpIpYhQiurIKBX0kCpaLexjYqGX4uL5PiERSigpmT4v2buJFNyrU6EPBaYhIB36VAbbK7nvt/X1DwyKgEx2kQjuZohhmOEREaEBIFTLebsbYOyjnoA2C8iJH2MBZnxickpIZIMcYqdnGKzZuXmeyQXB1C84FjmEWVpe4cI8IBO8b2SVEMzaOo50QC9cccNOiU2c5FPAubW9swv3KLBPAG4J5wEbHtpmCXBElijA5hilJ3CfAKc4LwRF2LhQegbPCXCB82JQgq6Hlyi9gtfjHHCDAQMwmpC5RekdhDu4t9/jv1UKuK18YNPHJwinnln38ko2EoCycmTf3j8+v1jz/fPrcvzhXl/BDkSl74GpQhNVXeOrrzXjobTUSff1dPAbJInGJv5gNLd499ZW4dEyt5k86/x2s+h0WjoEiEnTKXG+jYYuq06h6Lb29Br59B9jKQitCx+kXQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMi0xMi0xNVQxMDowODoyNyswMDowMMe6HOEAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjItMTItMTVUMTA6MDg6MjcrMDA6MDC256RdAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAFd6VFh0UmF3IHByb2ZpbGUgdHlwZSBpcHRjAAB4nOPyDAhxVigoyk/LzEnlUgADIwsuYwsTIxNLkxQDEyBEgDTDZAMjs1Qgy9jUyMTMxBzEB8uASKBKLgDqFxF08kI1lQAAAABJRU5ErkJggg=="
 
   // uses built-in "purple" as base, then overrides with exact pim-ui palette via CSS vars
   //   sidebar bg  = $pim-dark   #1d0c31
@@ -57,7 +57,7 @@ object SwaggerPlugin extends AutoPlugin {
 			 |  <title>Adeona API Reference </title>
 			 |  <meta charset="utf-8" />
 			 |  <meta name="viewport" content="width=device-width, initial-scale=1" />
-             |  <link rel="icon" type="image/svg+xml" href="$faviconRef">
+             |  <link rel="icon" type="image/png" href="$faviconRef">
 			 |</head>
 			 |<body>
 			 |  <div id="app"></div>
@@ -93,7 +93,7 @@ object SwaggerPlugin extends AutoPlugin {
        |  <meta charset="utf-8"/>                                                                                                                                                                                                                            
        |  <meta name="viewport" content="width=device-width, initial-scale=1">
        |  <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Semi+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
-       |  <link rel="icon" type="image/svg+xml" href="$faviconRef">
+       |  <link rel="icon" type="image/png" href="$faviconRef">
        |  <style>body { margin: 0; padding: 0; }</style>
        |</head>                                                                                                                                                                                                                                              
        |<body>                                                                                                                                                                                                                                               
