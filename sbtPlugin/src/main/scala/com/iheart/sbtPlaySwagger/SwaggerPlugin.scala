@@ -128,7 +128,7 @@ object SwaggerPlugin extends AutoPlugin {
     ivyConfigurations += SwaggerConfig,
     resolvers += Resolver.jcenterRepo,
     // todo: remove hardcoded org name using BuildInfo
-    libraryDependencies += "io.github.play-swagger" %% "play-swagger" % playSwaggerVersion % SwaggerConfig,
+    libraryDependencies += "com.github.v-limo.play-swagger" %% "play-swagger" % playSwaggerVersion % SwaggerConfig,
     dependencyOverrides ++= {
       if (scalaBinaryVersion.value == "3")
         Seq(

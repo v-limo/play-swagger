@@ -1,4 +1,4 @@
-ThisBuild / version := "4.1.3"
+ThisBuild / version := "4.1.5"
 Publish.lintSettings
 ThisBuild / publish / skip := true
 ThisBuild / scalafixDependencies ++= Seq(
